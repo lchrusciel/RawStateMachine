@@ -1,6 +1,8 @@
 <?php
 
+use App\EventListener\PaymentPaidListener;
 use App\Model\Payment;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Workflow\DefinitionBuilder;
 use Symfony\Component\Workflow\MarkingStore\MethodMarkingStore;
 use Symfony\Component\Workflow\Transition;
@@ -20,11 +22,15 @@ $definition = $definitionBuilder->addPlaces(['new','pending','failed','paid'])
 $singleState = true;
 $property = 'state';
 $marking = new MethodMarkingStore($singleState, $property);
-$workflow = new Workflow($definition, $marking);
+
+$dispatcher = new EventDispatcher();
+$dispatcher->addListener('workflow.payment.enter.paid', new PaymentPaidListener());
+
+$workflow = new Workflow($definition, $marking, $dispatcher, 'payment');
 
 $payment = new Payment();
 
 $workflow->apply($payment, 'process');
-$workflow->apply($payment, 'fail');
+$workflow->apply($payment, 'pay');
 
 var_dump($payment);
