@@ -1,0 +1,16 @@
+{
+    "name": "lchrusciel/state-machine-raw",
+    "description": "Sample project presenting State Machine libraries possibilities",
+    "type": "project",
+    "require": {
+        "winzou/state-machine": "^0.4.1",
+        "symfony/workflow": "^5.3"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Łukasz Chruściel",
+            "email": "lchrusciel@gmail.com"
+        }
+    ]
+}
