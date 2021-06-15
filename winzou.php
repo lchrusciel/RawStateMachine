@@ -1,6 +1,7 @@
 <?php
 
 use App\Model\Payment;
+use App\Operator\InventoryOperator;
 use SM\StateMachine\StateMachine;
 
 require __DIR__ . '/vendor/autoload.php';
@@ -23,6 +24,14 @@ $config = [
             'to' => 'paid',
         ],
     ],
+    'callbacks' => [
+        'before' => [
+            'reduce_amount' => [
+                'on' => ['pay'],
+                'do' => new InventoryOperator(),
+            ],
+        ],
+    ],
 ];
 
 $payment = new Payment();
@@ -30,6 +39,6 @@ $payment = new Payment();
 $stateMachine = new StateMachine($payment, $config);
 
 $stateMachine->apply('process');
-$stateMachine->apply('fail');
+$stateMachine->apply('pay');
 
 var_dump($payment);
